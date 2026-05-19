@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aklas Beladp - Daily Report Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #06101b;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(6, 16, 27, 0.75);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 999;
+    }
+    .nav-logo {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #00d9ff, #39ffa0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 15px;
+      font-weight: 600;
+      color: #cce5f3;
+      transition: 0.3s;
+    }
+    .nav-links a:hover { color: #00d9ff; }
+    .nav-btn {
+      padding: 10px 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #00d9ff, #0ebeff);
+      color: #03111d;
+      font-weight: 700;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .nav-btn:hover { transform: translateY(-2px); }
+    .nav-toggle { display: none; font-size: 26px; cursor: pointer; }
+
+    /* ===== HERO ===== */
+    :root {
+      --gold: #FFD700;
+      --gold-glow: rgba(255, 215, 0, 0.5);
+      --cyan: #00E5FF;
+      --cyan-glow: rgba(0, 229, 255, 0.5);
+      --red: #FF3B5C;
+      --red-glow: rgba(255, 59, 92, 0.5);
+      --purple: #B44AFF;
+      --purple-glow: rgba(180, 74, 255, 0.5);
+      --green: #00E676;
+      --green-glow: rgba(0, 230, 118, 0.5);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-section {
+      font-family: 'Rajdhani', sans-serif;
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+      overflow: hidden;
+    }
+
+    /* Background layers */
+    .bg-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .bg-gradient {
+      background: radial-gradient(ellipse at 20% 50%, rgba(255, 140, 0, 0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 50%, rgba(180, 74, 255, 0.06) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 0%, rgba(0, 229, 255, 0.05) 0%, transparent 50%),
+                  linear-gradient(180deg, var(--bg-primary) 0%, #0d0d15 50%, var(--bg-primary) 100%);
+      animation: bgRotate 30s linear infinite;
+    }
+
+    @keyframes bgRotate {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .bg-grid {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.5;
+    }
+
+    /* Particles */
+    .particles-container {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+      10% { opacity: 1; scale: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) translateX(100px) scale(0.5); opacity: 0; }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,215,0,0.3), transparent);
+      top: -100px; left: -100px;
+      animation: orbFloat1 15s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(0,229,255,0.2), transparent);
+      bottom: -100px; right: -100px;
+      animation: orbFloat2 18s ease-in-out infinite;
+    }
+
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(180,74,255,0.2), transparent);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: orbFloat3 20s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(80px, 60px) scale(1.1); }
+      66% { transform: translate(-40px, 100px) scale(0.9); }
+    }
+
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-70px, -50px) scale(1.15); }
+      66% { transform: translate(50px, -80px) scale(0.85); }
+    }
+
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-30%, -70%) scale(1.2); }
+    }
+
+    /* Header / Title area */
+    .hero-header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: 0;
+      animation: headerEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes headerEntrance {
+      0% { opacity: 0; transform: translateY(-40px) scale(0.95); filter: blur(10px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #FFD700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      position: relative;
+      line-height: 1.2;
+    }
+
+    .hero-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: lineGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes lineGlow {
+      0%, 100% { opacity: 0.3; width: 80%; }
+      50% { opacity: 1; width: 100%; }
+    }
+
+    .hero-subtitle {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Cards scene */
+    .cards-scene {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1300px;
+      height: 420px;
+      perspective: 1500px;
+      transform-style: preserve-3d;
+      margin: 0 auto;
+    }
+
+    .cards-arc {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Card styles */
+    .report-card {
+      position: absolute;
+      width: 200px;
+      height: 300px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+      animation: cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+
+    @keyframes cardEntrance {
+      0% { opacity: 0; transform: translateY(80px) rotateX(20deg) scale(0.8); }
+      100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+    }
+
+    .report-card:nth-child(1) { animation-delay: 0.5s; }
+    .report-card:nth-child(2) { animation-delay: 0.7s; }
+    .report-card:nth-child(3) { animation-delay: 0.9s; }
+    .report-card:nth-child(4) { animation-delay: 1.1s; }
+    .report-card:nth-child(5) { animation-delay: 1.3s; }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Card background with glassmorphism */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    /* Metallic edge */
+    .card-face::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1.5px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05), rgba(255,255,255,0.2));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Inner glow */
+    .card-face::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 60%);
+      opacity: 0.15;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .report-card:hover .card-face::after {
+      opacity: 0.3;
+    }
+
+    /* Shine sweep */
+    .shine-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .shine-layer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      transform: skewX(-20deg);
+      animation: shineSweep 4s ease-in-out infinite;
+    }
+
+    @keyframes shineSweep {
+      0%, 100% { left: -100%; }
+      50% { left: 150%; }
+    }
+
+    /* Card content */
+    .card-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .card-symbol {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+      text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+      line-height: 1;
+      transition: text-shadow 0.4s ease;
+    }
+
+    .report-card:hover .card-title {
+      text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow), 0 0 120px var(--accent-glow);
+    }
+
+    .card-divider {
+      width: 50%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin: 14px 0;
+      opacity: 0.5;
+    }
+
+    .card-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(255,255,255,0.3);
+      position: relative;
+    }
+
+    .card-value::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--accent-glow);
+      opacity: 0.6;
+    }
+
+    /* Card corner decorations */
+    .card-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      z-index: 3;
+    }
+
+    .card-corner-tl {
+      top: 10px; left: 10px;
+      border-top: 2px solid var(--accent);
+      border-left: 2px solid var(--accent);
+      border-radius: 4px 0 0 0;
+      opacity: 0.5;
+    }
+
+    .card-corner-tr {
+      top: 10px; right: 10px;
+      border-top: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+      border-radius: 0 4px 0 0;
+      opacity: 0.5;
+    }
+
+    .card-corner-bl {
+      bottom: 10px; left: 10px;
+      border-bottom: 2px solid var(--accent);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 0 0 4px;
+      opacity: 0.5;
+    }
+
+    .card-corner-br {
+      bottom: 10px; right: 10px;
+      border-bottom: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+      border-radius: 0 0 4px 0;
+      opacity: 0.5;
+    }
+
+    /* Card floating animation */
+    @keyframes cardFloat1 {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-15px) rotateY(2deg); }
+    }
+
+    @keyframes cardFloat2 {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-20px) rotateY(-2deg); }
+    }
+
+    @keyframes cardFloat3 {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-12px) rotateY(1deg); }
+    }
+
+    @keyframes cardFloat4 {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-18px) rotateY(-1deg); }
+    }
+
+    @keyframes cardFloat5 {
+      0%, 100% { transform: translateY(0px) rotateY(0deg); }
+      50% { transform: translateY(-10px) rotateY(1.5deg); }
+    }
+
+    /* Card neon border animation */
+    .neon-border {
+      position: absolute;
+      inset: -2px;
+      border-radius: 22px;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .neon-border::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      padding: 2px;
+      background: conic-gradient(from 0deg, transparent, var(--accent), transparent, var(--accent), transparent);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: neonRotate 6s linear infinite;
+      opacity: 0.5;
+      transition: opacity 0.4s ease;
+    }
+
+    .report-card:hover .neon-border::before {
+      opacity: 1;
+    }
+
+    @keyframes neonRotate {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Card glow behind */
+    .card-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120%;
+      height: 120%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: -1;
+      filter: blur(30px);
+    }
+
+    .report-card:hover .card-glow {
+      opacity: 0.25;
+    }
+
+    /* Reflection under cards */
+    .card-reflection {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%) scaleY(-0.3);
+      width: 80%;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--accent-glow), transparent);
+      opacity: 0;
+      filter: blur(10px);
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .report-card:hover .card-reflection {
+      opacity: 0.15;
+    }
+
+    /* Hover lift effect */
+    .report-card:hover {
+      filter: brightness(1.15);
+    }
+
+    .report-card:hover .card-inner {
+      transform: translateY(-20px) scale(1.05);
+    }
+
+    /* Card specific floating delays */
+    .report-card:nth-child(1) { --float-anim: cardFloat1; }
+    .report-card:nth-child(2) { --float-anim: cardFloat2; }
+    .report-card:nth-child(3) { --float-anim: cardFloat3; }
+    .report-card:nth-child(4) { --float-anim: cardFloat4; }
+    .report-card:nth-child(5) { --float-anim: cardFloat5; }
+
+    /* Ambient light lines */
+    .ambient-line {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      z-index: 1;
+    }
+
+    .ambient-line:nth-child(1) { top: 20%; width: 100%; }
+    .ambient-line:nth-child(2) { top: 40%; width: 80%; left: 10%; }
+    .ambient-line:nth-child(3) { top: 60%; width: 60%; left: 20%; }
+    .ambient-line:nth-child(4) { top: 80%; width: 100%; }
+
+    /* Bottom info */
+    .bottom-bar {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      animation: headerEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 1.8s;
+    }
+
+    .bottom-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .bottom-dot.active {
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    /* Status indicator */
+    .live-indicator {
+      position: absolute;
+      top: 80px; /* adjusted to clear navbar */
+      right: 40px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: headerEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 1.5s;
+    }
+
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00E676;
+      animation: livePulse 2s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .live-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: #00E676;
+    }
+
+    /* Top left logo area */
+    .logo-area {
+      position: absolute;
+      top: 80px; /* adjusted to clear navbar */
+      left: 40px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: headerEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 1.5s;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #FF8C00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 0.8rem;
+      color: #000;
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .cards-scene {
+        height: 380px;
+      }
+      .report-card {
+        width: 170px;
+        height: 260px;
+      }
+      .card-title {
+        font-size: 2.2rem;
+      }
+      .card-value {
+        font-size: 2.8rem;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .cards-scene {
+        height: 340px;
+        max-width: 100%;
+        padding: 0 10px;
+      }
+      .report-card {
+        width: 150px;
+        height: 230px;
+      }
+      .card-title {
+        font-size: 1.8rem;
+      }
+      .card-value {
+        font-size: 2.4rem;
+      }
+      .card-content {
+        padding: 16px 12px;
+      }
+      .hero-title {
+        font-size: 1.5rem;
+      }
+      .hero-subtitle {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards-scene {
+        height: 300px;
+      }
+      .report-card {
+        width: 130px;
+        height: 200px;
+      }
+      .card-title {
+        font-size: 1.5rem;
+      }
+      .card-value {
+        font-size: 2rem;
+      }
+      .card-symbol {
+        font-size: 0.6rem;
+      }
+      .card-label {
+        font-size: 0.7rem;
+      }
+      .hero-header {
+        margin-bottom: 30px;
+      }
+      .logo-area {
+        left: 20px;
+        top: 80px;
+      }
+      .live-indicator {
+        right: 20px;
+        top: 80px;
+      }
+    }
+
+    /* ===== SECTION TITLE ===== */
+    .section {
+      padding: 90px 0;
+      position: relative;
+    }
+    .section-container {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .section-head { text-align: center; margin-bottom: 50px; }
+    .section-eyebrow {
+      display:inline-block; padding:8px 16px;
+      border-radius:999px;
+      background: rgba(0,217,255,0.1);
+      color:#8fdcff;
+      font-size:12px; font-weight:700;
+      letter-spacing:1px; text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    .section-title {
+      font-size: clamp(30px, 4vw, 50px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      max-width: 680px;
+      margin: 0 auto;
+      color: #9cb6c9;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ===== ABOUT ===== */
+    .about-section {
+      background: linear-gradient(180deg, #06101b, #08182a);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .about-img {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: linear-gradient(135deg, rgba(0,217,255,0.15), rgba(57,255,160,0.1));
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      color: rgba(255,255,255,0.2);
+    }
+    .about-text h3 { font-size: 32px; margin-bottom: 16px; font-weight: 800; }
+    .about-text p { color: #9cb6c9; line-height: 1.8; margin-bottom: 14px; }
+    .about-list { list-style: none; margin-top: 20px; }
+    .about-list li {
+      padding: 10px 0;
+      color: #cce5f3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .about-list li::before {
+      content: "✓";
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00d9ff, #39ffa0);
+      color: #03111d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    /* ===== SERVICES ===== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .service-card {
+      padding: 30px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.3s;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0,217,255,0.4);
+      background: rgba(255,255,255,0.06);
+    }
+    .service-icon {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #00d9ff, #39ffa0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+    .service-card h4 { font-size: 20px; margin-bottom: 10px; font-weight: 800; }
+    .service-card p { color: #9cb6c9; line-height: 1.7; font-size: 15px; }
+
+    /* ===== REPORTS HISTORY ===== */
+    .history-section {
+      background: linear-gradient(180deg, #08182a, #06101b);
+    }
+    .history-table {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .history-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      align-items: center;
+    }
+    .history-row:last-child { border-bottom: none; }
+    .history-row.header {
+      background: rgba(0,217,255,0.08);
+      font-weight: 800;
+      color: #8fdcff;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .history-row .cell { font-size: 15px; font-weight: 700; }
+    .history-row .cell.date { color: #cce5f3; font-weight: 600; font-size: 14px; }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+    .cta-box {
+      width: min(900px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 60px 40px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(0,217,255,0.12), rgba(57,255,160,0.08));
+      border: 1px solid rgba(0,217,255,0.25);
+      backdrop-filter: blur(14px);
+    }
+    .cta-box h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .cta-box p { color: #cce5f3; margin-bottom: 26px; font-size: 17px; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      padding: 60px 0 30px;
+      background: #04090f;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .footer-col h5 {
+      font-size: 16px;
+      margin-bottom: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .footer-col p, .footer-col a {
+      color: #8da0b3;
+      font-size: 14px;
+      line-height: 1.9;
+      display: block;
+      transition: 0.3s;
+    }
+    .footer-col a:hover { color: #00d9ff; }
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #00d9ff, #39ffa0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+    }
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      color: #6e8294;
+      font-size: 13px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1100px) {
+      .hero-main { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .history-row { grid-template-columns: repeat(4, 1fr); font-size: 12px; }
+      .history-row .cell:nth-child(n+5) { display: none; }
+    }
+    @media (max-width: 767px) {
+      .navbar { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .hero-report { padding: 100px 0 30px; }
+      .hero-stats, .quick-lines, .report-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .history-row { grid-template-columns: repeat(3, 1fr); }
+      .history-row .cell:nth-child(n+4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-logo">Aklas Beladp</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#history">History</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-btn">Get Started</a>
+    <div class="nav-toggle">☰</div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero-section" id="home">
+    <!-- Background layers -->
+    <div class="bg-layer bg-gradient"></div>
+    <div class="bg-layer bg-grid"></div>
+
+    <!-- Floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Particles -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- Ambient lines -->
+    <div class="ambient-line"></div>
+    <div class="ambient-line"></div>
+    <div class="ambient-line"></div>
+    <div class="ambient-line"></div>
+
+    <!-- Logo -->
+    <div class="logo-area">
+      <div class="logo-icon">RD</div>
+      <div class="logo-text">REPORT DASHBOARD</div>
+    </div>
+
+    <!-- Live indicator -->
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <div class="live-text">LIVE</div>
+    </div>
+
+    <!-- Header -->
+    <div class="hero-header">
+      <h1 class="hero-title">LIVE REPORT DASHBOARD</h1>
+      <p class="hero-subtitle">Dynamic 3D Performance Cards</p>
+    </div>
+
+    <!-- Cards scene -->
+    <div class="cards-scene" id="cardsScene">
+      <div class="cards-arc" id="cardsArc">
+
+        <!-- Card 1: GM -->
+        <div class="report-card" data-index="0" data-accent="var(--gold)" style="--accent: var(--gold); --accent-glow: var(--gold-glow);">
+          <div class="card-glow"></div>
+          <div class="card-reflection"></div>
+          <div class="neon-border"></div>
+          <div class="card-inner" id="cardInner0">
+            <div class="card-face">
+              <div class="card-corner card-corner-tl"></div>
+              <div class="card-corner card-corner-tr"></div>
+              <div class="card-corner card-corner-bl"></div>
+              <div class="card-corner card-corner-br"></div>
+              <div class="shine-layer"></div>
+              <div class="card-content">
+                <div class="card-symbol">● REPORT</div>
+                <div class="card-title">GM</div>
+                <div class="card-divider"></div>
+                <div class="card-label">Report</div>
+                <div class="card-value">75</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: LS1 -->
+        <div class="report-card" data-index="1" data-accent="var(--cyan)" style="--accent: var(--cyan); --accent-glow: var(--cyan-glow);">
+          <div class="card-glow"></div>
+          <div class="card-reflection"></div>
+          <div class="neon-border"></div>
+          <div class="card-inner" id="cardInner1">
+            <div class="card-face">
+              <div class="card-corner card-corner-tl"></div>
+              <div class="card-corner card-corner-tr"></div>
+              <div class="card-corner card-corner-bl"></div>
+              <div class="card-corner card-corner-br"></div>
+              <div class="shine-layer"></div>
+              <div class="card-content">
+                <div class="card-symbol">● REPORT</div>
+                <div class="card-title">LS1</div>
+                <div class="card-divider"></div>
+                <div class="card-label">Report</div>
+                <div class="card-value">17</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: AK -->
+        <div class="report-card" data-index="2" data-accent="var(--red)" style="--accent: var(--red); --accent-glow: var(--red-glow);">
+          <div class="card-glow"></div>
+          <div class="card-reflection"></div>
+          <div class="neon-border"></div>
+          <div class="card-inner" id="cardInner2">
+            <div class="card-face">
+              <div class="card-corner card-corner-tl"></div>
+              <div class="card-corner card-corner-tr"></div>
+              <div class="card-corner card-corner-bl"></div>
+              <div class="card-corner card-corner-br"></div>
+              <div class="shine-layer"></div>
+              <div class="card-content">
+                <div class="card-symbol">● REPORT</div>
+                <div class="card-title">AK</div>
+                <div class="card-divider"></div>
+                <div class="card-label">Report</div>
+                <div class="card-value">17</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: LS2 -->
+        <div class="report-card" data-index="3" data-accent="var(--purple)" style="--accent: var(--purple); --accent-glow: var(--purple-glow);">
+          <div class="card-glow"></div>
+          <div class="card-reflection"></div>
+          <div class="neon-border"></div>
+          <div class="card-inner" id="cardInner3">
+            <div class="card-face">
+              <div class="card-corner card-corner-tl"></div>
+              <div class="card-corner card-corner-tr"></div>
+              <div class="card-corner card-corner-bl"></div>
+              <div class="card-corner card-corner-br"></div>
+              <div class="shine-layer"></div>
+              <div class="card-content">
+                <div class="card-symbol">● REPORT</div>
+                <div class="card-title">LS2</div>
+                <div class="card-divider"></div>
+                <div class="card-label">Report</div>
+                <div class="card-value">37</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: LS3 -->
+        <div class="report-card" data-index="4" data-accent="var(--green)" style="--accent: var(--green); --accent-glow: var(--green-glow);">
+          <div class="card-glow"></div>
+          <div class="card-reflection"></div>
+          <div class="neon-border"></div>
+          <div class="card-inner" id="cardInner4">
+            <div class="card-face">
+              <div class="card-corner card-corner-tl"></div>
+              <div class="card-corner card-corner-tr"></div>
+              <div class="card-corner card-corner-bl"></div>
+              <div class="card-corner card-corner-br"></div>
+              <div class="shine-layer"></div>
+              <div class="card-content">
+                <div class="card-symbol">● REPORT</div>
+                <div class="card-title">LS3</div>
+                <div class="card-divider"></div>
+                <div class="card-label">Report</div>
+                <div class="card-value">33</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom dots -->
+    <div class="bottom-bar">
+      <div class="bottom-dot active" data-slide="0"></div>
+      <div class="bottom-dot" data-slide="1"></div>
+      <div class="bottom-dot" data-slide="2"></div>
+      <div class="bottom-dot" data-slide="3"></div>
+      <div class="bottom-dot" data-slide="4"></div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section about-section" id="about">
+    <div class="section-container">
+      <div class="section-head">
+        <span class="section-eyebrow">About Us</span>
+        <h2 class="section-title">Who We Are & <span class="gradient">What We Do</span></h2>
+        <p class="section-desc">
+          Aklas Beladp aik trusted platform hai jahan aapko rozana ke important
+          reports aur updates ek hi jagah modern aur professional tareeqe se mil jate hain.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-img">📊</div>
+        <div class="about-text">
+          <h3>Daily Updated Report Platform</h3>
+          <p>
+            Hamari website ka maqsad aapko hamesha taza tareen daily reports
+            ek easy aur clean interface mein faraham karna hai. Har report ko
+            real-time mein update kiya jata hai.
+          </p>
+          <p>
+            Chahe aap DP report dekhna chahte hon, GM ya LS series, sab kuch
+            ek hi dashboard par mojood hai.
+          </p>
+          <ul class="about-list">
+            <li>Daily Updated Numbers</li>
+            <li>100% Accurate Reports</li>
+            <li>Modern Glass UI Design</li>
+            <li>Mobile & Desktop Friendly</li>
+            <li>Fast Loading Speed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section" id="services">
+    <div class="section-container">
+      <div class="section-head">
+        <span class="section-eyebrow">Our Services</span>
+        <h2 class="section-title">What We <span class="gradient">Offer</span></h2>
+        <p class="section-desc">
+          Hum aapko mukhtalif categories ke daily reports aur updates ek professional format mein faraham karte hain.
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">📈</div>
+          <h4>DP Reports</h4>
+          <p>Rozana ke DP reports ek modern dashboard ke zariye instantly update hote hain.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h4>GM Reports</h4>
+          <p>GM category ke detailed reports har roz update kiye jate hain.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📉</div>
+          <h4>LS Series</h4>
+          <p>LS1, LS2, aur LS3 — teeno series ke complete reports yahan available hain.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📱</div>
+          <h4>Mobile Friendly</h4>
+          <p>Hamara dashboard har device par equally smooth chalta hai.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <h4>Fast Updates</h4>
+          <p>Reports real-time mein update hote hain bina kisi delay ke.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🔒</div>
+          <h4>Secure Platform</h4>
+          <p>Aapka data aur browsing experience completely safe & secure hai.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HISTORY ===== -->
+  <section class="section history-section" id="history">
+    <div class="section-container">
+      <div class="section-head">
+        <span class="section-eyebrow">Reports History</span>
+        <h2 class="section-title">Recent <span class="gradient">7 Days</span> Report</h2>
+        <p class="section-desc">Pichle hafte ke tamam reports ek table mein dekhain.</p>
+      </div>
+
+      <div class="history-table" id="historyTable">
+        <div class="history-row header">
+          <div class="cell">Date</div>
+          <div class="cell">DP</div>
+          <div class="cell">GM</div>
+          <div class="cell">LS1</div>
+          <div class="cell">AK</div>
+          <div class="cell">LS2</div>
+          <div class="cell">LS3</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section" id="contact">
+    <div class="cta-box">
+      <h2>Stay Updated With <span class="gradient">Daily Reports</span></h2>
+      <p>Hamari website ko regularly visit karein aur har roz ke fresh reports sabse pehle hasil karein.</p>
+      <a href="#home" class="btn btn-primary">Back to Top</a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="section-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">Aklas Beladp</div>
+          <p>Aapki trusted daily reports website. Har roz fresh aur accurate numbers ek professional dashboard ke zariye.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#history">History</a>
+        </div>
+        <div class="footer-col">
+          <h5>Reports</h5>
+          <a href="#">DP Report</a>
+          <a href="#">GM Report</a>
+          <a href="#">LS Series</a>
+          <a href="#">AK Report</a>
+        </div>
+        <div class="footer-col">
+          <h5>Contact</h5>
+          <a href="#">aklasbeladp.com</a>
+          <a href="#">info@aklasbeladp.com</a>
+          <a href="#">Daily Support</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Aklas Beladp. All Rights Reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== New Hero Script =====
+    (function() {
+      'use strict';
+
+      const heroSection = document.getElementById('home');
+      const cardsScene = document.getElementById('cardsScene');
+      const cardsArc = document.getElementById('cardsArc');
+      const cards = document.querySelectorAll('.report-card');
+      const cardInners = document.querySelectorAll('.card-inner');
+      const particlesContainer = document.getElementById('particlesContainer');
+      const bottomDots = document.querySelectorAll('.bottom-dot');
+
+      if(!cardsScene) return;
+
+      // Position cards in arc layout
+      function positionCards() {
+        const sceneWidth = cardsScene.offsetWidth;
+        const cardWidth = cards[0].offsetWidth;
+        const totalWidth = cards.length * (cardWidth + 20);
+        const startX = (sceneWidth - totalWidth) / 2;
+        const centerY = cardsScene.offsetHeight / 2;
+        
+        cards.forEach((card, index) => {
+          const angle = ((index - (cards.length - 1) / 2) * 18) * (Math.PI / 180);
+          const x = startX + index * (cardWidth + 20) + cardWidth / 2;
+          const y = centerY - Math.cos(angle) * 30;
+
+          card.style.left = (x - cardWidth / 2) + 'px';
+          card.style.top = y + 'px';
+          card.style.transform = `translateY(0) rotateY(${angle * 5}deg) rotateX(${Math.sin(angle) * 3}deg)`;
+
+          // Set floating animation
+          const floatDuration = 4 + index * 0.5;
+          const floatDelay = index * 0.3;
+          card.style.animation = `cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards, cardFloat${(index % 5) + 1} ${floatDuration}s ease-in-out ${floatDelay}s infinite`;
+        });
+      }
+
+      // Create particles
+      function createParticles() {
+        const colors = ['rgba(255,215,0,0.6)', 'rgba(0,229,255,0.5)', 'rgba(255,59,92,0.5)', 'rgba(180,74,255,0.5)', 'rgba(0,230,118,0.5)', 'rgba(255,255,255,0.3)'];
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('particle');
+          const size = Math.random() * 4 + 1;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          particle.style.width = size + 'px';
+          particle.style.height = size + 'px';
+          particle.style.background = color;
+          particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+          particle.style.animationDelay = (Math.random() * 10) + 's';
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      // Mouse parallax effect
+      let mouseX = 0, mouseY = 0;
+      let targetRotX = 0, targetRotY = 0;
+      let currentRotX = 0, currentRotY = 0;
+
+      document.addEventListener('mousemove', function(e) {
+        if(!cardsScene.matches(':hover')) return; // only rotate when interacting near scene
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+        targetRotY = mouseX * 8;
+        targetRotX = -mouseY * 5;
+
+        // Individual card tilt
+        cards.forEach((card, index) => {
+          const rect = card.getBoundingClientRect();
+          const cardCenterX = rect.left + rect.width / 2;
+          const cardCenterY = rect.top + rect.height / 2;
+          const deltaX = (e.clientX - cardCenterX) / rect.width;
+          const deltaY = (e.clientY - cardCenterY) / rect.height;
+
+          const tiltX = deltaY * -8;
+          const tiltY = deltaX * 8;
+
+          cardInners[index].style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        });
+      });
+
+      // Smooth animation loop for scene rotation
+      function animateScene() {
+        currentRotX += (targetRotX - currentRotX) * 0.05;
+        currentRotY += (targetRotY - currentRotY) * 0.05;
+
+        cardsArc.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
+
+        requestAnimationFrame(animateScene);
+      }
+
+      // Reset card tilt on mouse leave
+      document.addEventListener('mouseleave', function() {
+        targetRotX = 0;
+        targetRotY = 0;
+        cardInners.forEach(function(inner) {
+          inner.style.transform = '';
+        });
+      });
+
+      // Bottom dots interaction
+      bottomDots.forEach(function(dot) {
+        dot.addEventListener('click', function() {
+          bottomDots.forEach(function(d) { d.classList.remove('active'); });
+          dot.classList.add('active');
+        });
+      });
+
+      // Card hover sound-like visual feedback
+      cards.forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          bottomDots.forEach(function(d) { d.classList.remove('active'); });
+          bottomDots[index].classList.add('active');
+        });
+      });
+
+      // Initialize
+      function init() {
+        createParticles();
+        positionCards();
+        animateScene();
+      }
+
+      // Handle resize
+      let resizeTimeout;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(positionCards, 150);
+      });
+
+      // Start
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+
+    // ===== History Table (random sample) =====
+    const historyTable = document.getElementById("historyTable");
+    const days = 7;
+    for (let i = 1; i <= days; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const row = document.createElement("div");
+      row.className = "history-row";
+      row.innerHTML = `
+        <div class="cell date">${d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}</div>
+        <div class="cell">${Math.floor(Math.random()*30)+10}</div>
+        <div class="cell">${Math.floor(Math.random()*50)+40}</div>
+        <div class="cell">${Math.floor(Math.random()*25)+10}</div>
+        <div class="cell">${Math.floor(Math.random()*25)+10}</div>
+        <div class="cell">${Math.floor(Math.random()*40)+20}</div>
+        <div class="cell">${Math.floor(Math.random()*40)+20}</div>
+      `;
+      historyTable.appendChild(row);
+    }
+  </script>
+</body>
+</html>
