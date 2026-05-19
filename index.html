@@ -1512,11 +1512,21 @@
         positionCards();
         animateScene();
         
-        // Set Current Date
+        // Set Current Date & Time with Auto-Update
         const dateElement = document.getElementById('heroCurrentDate');
         if (dateElement) {
-          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-          dateElement.textContent = new Date().toLocaleDateString('en-US', options).toUpperCase();
+          function updateDateTime() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            
+            const dateStr = now.toLocaleDateString('en-US', dateOptions).toUpperCase();
+            const timeStr = now.toLocaleTimeString('en-US', timeOptions);
+            
+            dateElement.innerHTML = `${dateStr} &nbsp;&nbsp;|&nbsp;&nbsp; <span style="color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);">${timeStr}</span>`;
+          }
+          updateDateTime(); // Initial call
+          setInterval(updateDateTime, 1000); // Update every second
         }
       }
 
