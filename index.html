@@ -249,6 +249,25 @@
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 20px;
+    }
+
+    .hero-date {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      text-shadow: 0 0 10px var(--cyan-glow);
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 50px;
+      background: rgba(0, 229, 255, 0.05);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      backdrop-filter: blur(10px);
+      animation: headerEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.5s;
+      opacity: 0;
     }
 
     /* Cards scene */
@@ -1080,6 +1099,7 @@
     <div class="hero-header">
       <h1 class="hero-title">LIVE REPORT DASHBOARD</h1>
       <p class="hero-subtitle">Dynamic 3D Performance Cards</p>
+      <div class="hero-date" id="heroCurrentDate"></div>
     </div>
 
     <!-- Cards scene -->
@@ -1491,6 +1511,13 @@
         createParticles();
         positionCards();
         animateScene();
+        
+        // Set Current Date
+        const dateElement = document.getElementById('heroCurrentDate');
+        if (dateElement) {
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          dateElement.textContent = new Date().toLocaleDateString('en-US', options).toUpperCase();
+        }
       }
 
       // Handle resize
